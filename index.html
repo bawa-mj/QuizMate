@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Challenge Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl relative">
+        <!-- Game Setup Screen -->
+        <div id="setup-screen" class="p-8 md:p-12 text-center">
+            <h1 class="text-3xl font-bold mb-4 text-gray-800 dark:text-gray-200">QuizMate</h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Choose your branch, year, subject, and topic to begin.</p>
+            <div class="space-y-4">
+                <input type="text" id="student-name-input" placeholder="Enter Your Name" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <select id="branch-select" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700">
+                        <option value="" disabled selected>Select Branch</option>
+                        <option value="CSE">CSE</option>
+                        <option value="AIML">AIML</option>
+                        <option value="ME">ME</option>
+                        <option value="ECE">ECE</option>
+                        <option value="Civil">Civil</option>
+                    </select>
+                    <select id="year-select" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700">
+                        <option value="" disabled selected>Select Year</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                </div>
+                 <select id="subject-select" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700" disabled>
+                    <option value="" disabled selected>Select Subject</option>
+                </select>
+                <select id="difficulty-select" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700">
+                    <option value="Simple">Simple</option>
+                    <option value="Hard">Hard</option>
+                </select>
+                <input type="number" id="count-input" placeholder="Number of Questions (1-20)" min="1" max="20" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700">
+                <button id="start-game-btn" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">Generate Quiz</button>
+            </div>
+             <p id="setup-error" class="text-red-500 mt-4 text-sm hidden">Please fill in all fields. Questions must be between 1 and 20.</p>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="p-8 text-center hidden flex-col items-center justify-center min-h-[400px]">
+            <div class="loader"></div>
+            <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Generating your quiz...</p>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" class="p-6 md:p-8 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-gray-600 dark:text-gray-400 font-medium">Score: <span id="score">0</span></p>
+            </div>
+            <p id="question-text" class="text-lg mb-6 min-h-[60px]"></p>
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <div id="feedback-area" class="mt-4 text-center font-semibold"></div>
+            <button id="next-question-btn" class="w-full mt-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 hidden">Next</button>
+        </div>
+
+        <!-- Score Screen -->
+        <div id="score-screen" class="p-8 text-center hidden">
+            <h1 class="text-3xl font-bold mb-2"><span id="student-name"></span>'s Quiz Results!</h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Here's how you did:</p>
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6">
+                <p class="text-6xl font-bold text-blue-600 dark:text-blue-400 mb-2" id="final-percentage">0%</p>
+                <p class="text-lg font-medium">
+                    <span id="correct-answers">0</span> out of <span id="total-questions">0</span> correct
+                </p>
+            </div>
+            <button id="play-again-btn" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Mini Chatbot -->
+    <div id="chatbot-container">
+        <div id="chatbot-window" class="w-80 h-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col transform scale-95 opacity-0 hidden">
+            <div class="bg-blue-600 text-white p-3 rounded-t-xl">
+                <h3 class="font-semibold text-center">Academic Consultation</h3>
+            </div>
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto">
+                 <div class="text-xs text-center text-gray-500 dark:text-gray-400 mb-2">Ask me anything about your subjects!</div>
+            </div>
+            <div class="p-2 border-t dark:border-gray-700">
+                <form id="chat-form" class="flex items-center">
+                    <input type="text" id="chat-input" placeholder="Ask a question..." class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 text-sm">
+                    <button type="submit" id="chat-send-btn" class="ml-2 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <button id="chatbot-toggle-btn" class="mt-4 p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-question"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </button>
+    </div>
+
+    <script src="script.js">
+       
+    </script>
+</body>
+</html>
